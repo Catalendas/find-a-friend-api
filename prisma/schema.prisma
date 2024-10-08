@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ONG
+}
+
+model Pet {
+  pet_id                String  @id @default(uuid())
+  pet_name              String
+  pet_description       String?
+  age                   String
+  size                  Int
+  energy_level          Int
+  level_of_independence Int
+  environment           String
+  requirements          String
+
+  user_id  String
+  user User @relation(fields: [user_id], references: [user_id])
+
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
+  Pet_pictures Pet_pictures[]
+}
+
+model User {
+  user_id       String @id @default(uuid())
+  user_name     String
+  user_email    String
+  user_password String
+  cep           String
+  addres        String
+  phone         String
+  role          Role   @default(USER)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  Pet        Pet[]
+}
+
+model Pet_pictures {
+  picture_id    String @id @default(uuid())
+  ppicture_path String
+  pet_id        String
+
+  created_at DateTime @default(now())
+
+  pet Pet @relation(fields: [pet_id], references: [pet_id])
+}
